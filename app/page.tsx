@@ -28,13 +28,23 @@ const Page = () => {
           </h1>
 
           <div className="flex gap-6 items-center">
-            <Link href="/Details" className="font-semibold text-green-900 hover:text-black">
+            <SignedIn>
+               <Link href="/dashboard" className="font-semibold text-green-900 hover:text-black">
               Dashboard
             </Link>
-
-            <Link href="/Form" className="font-semibold text-green-900 hover:text-black">
+             <Link href="/add-product" className="font-semibold text-green-900 hover:text-black">
               Add Item
             </Link>
+
+            </SignedIn>
+
+             <SignedOut>
+               <div  className="font-semibold text-green-900 hover:text-black">
+@Start Managing            </div>
+             <div className="font-semibold text-green-900 hover:text-black">
+@Get Started            </div>
+
+            </SignedOut>
 
             <SignedIn>
               <UserButton afterSignOutUrl="/" />
