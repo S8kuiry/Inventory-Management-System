@@ -70,15 +70,41 @@ const Dashboard = () => {
 
   // 4. Calculations for Weekly Bar Chart 
   // (Groups products by the last 6 weeks based on createdAt)
+  // Helper to get date from createdAt OR the MongoDB _id
+  const getProductDate = (product: Product) => {
+    if (product.createdAt) return new Date(product.createdAt);
+    // MongoDB ID first 8 characters are a hex timestamp
+    return new Date(parseInt(product._id.substring(0, 8), 16) * 1000);
+  };
+
+  // 1. Weekly Data with Timestamp Fallback
   const weeklyProductData = useMemo(() => {
-    const weeks = ["Week 6", "Week 5", "Week 4", "Week 3", "Week 2", "Week 1"];
-    // This is a simplified mock-grouping. 
-    // In a real app, you'd filter products by their 'createdAt' date.
-    return weeks.map((w, i) => ({
-      week: w,
-      products: products.length > 0 ? Math.floor(Math.random() * products.length) : 0 // Replace with real date logic if createdAt exists
-    })).reverse();
+    const data = [];
+    const now = new Date();
+
+    for (let i = 5; i >= 0; i--) {
+      const start = new Date(now);
+      start.setDate(now.getDate() - (i * 7) - now.getDay() + 1);
+      start.setHours(0, 0, 0, 0);
+
+      const end = new Date(start);
+      end.setDate(start.getDate() + 6);
+      end.setHours(23, 59, 59, 999);
+
+      // Better labels like "23 Dec"
+      const label = start.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+
+      const count = products.filter(p => {
+        const d = getProductDate(p);
+        return d >= start && d <= end;
+      }).length;
+
+      data.push({ week: label, products: count });
+    }
+    return data;
   }, [products]);
+
+ 
 
   return (
     <>
