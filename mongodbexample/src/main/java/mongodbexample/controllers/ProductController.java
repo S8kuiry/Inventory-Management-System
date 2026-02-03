@@ -28,10 +28,19 @@ public class ProductController {
 
     // Get products based on userId
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Product>> getProductsByUserId(@PathVariable String userId) {
-        List<Product> products = productRepository.findByUserId(userId);
-        return ResponseEntity.ok(products);
-    };
+    public ResponseEntity<?> getProductsByUserId(@PathVariable String userId) {
+        try {
+            if (userId == null || userId.equals("undefined")) {
+                return ResponseEntity.badRequest().body("User ID is missing");
+            }
+            List<Product> products = productRepository.findByUserId(userId);
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            // This will print the ACTUAL error to your Render logs
+            System.err.println("DATABASE ERROR: " + e.getMessage());
+            return ResponseEntity.status(500).body("Database Error: " + e.getMessage());
+        }
+    }
 
     // delete produts by id
 
