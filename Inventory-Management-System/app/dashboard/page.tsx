@@ -5,7 +5,7 @@ import ProductsChart from '@/components/ProductsChart';
 import Sidebar from '@/components/Sidebar';
 import { FlickeringGrid } from '@/components/ui/flickering-grid';
 import { useAuth } from '@clerk/nextjs';
-import { TrendingUp, AlertTriangle, Package, DollarSign, Activity, HeartPulseIcon } from 'lucide-react';
+import { TrendingUp, AlertTriangle, Package, DollarSign, Activity, HeartPulseIcon, IndianRupeeIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useState, useMemo } from 'react';
 
@@ -23,7 +23,7 @@ const Dashboard = () => {
   const pathname = usePathname();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
-  const {userId} = useAuth()
+  const { userId } = useAuth()
 
   const getProducts = async () => {
     try {
@@ -41,7 +41,7 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    if(!userId)return ;
+    if (!userId) return;
     getProducts();
   }, [userId]);
 
@@ -63,25 +63,25 @@ const Dashboard = () => {
   }, [products]);
 
   const getProductDate = (product: Product) => {
-  // 1. If the backend actually sends a createdAt timestamp, use it.
-  if (product.createdAt) return new Date(product.createdAt);
+    // 1. If the backend actually sends a createdAt timestamp, use it.
+    if (product.createdAt) return new Date(product.createdAt);
 
-  // 2. Try to parse the MongoDB-style ObjectId if it exists and is valid length
-  if (product._id && product._id.length >= 8) {
-    try {
-      const timestamp = parseInt(product._id.substring(0, 8), 16) * 1000;
-      if (!isNaN(timestamp)) {
-        return new Date(timestamp);
+    // 2. Try to parse the MongoDB-style ObjectId if it exists and is valid length
+    if (product._id && product._id.length >= 8) {
+      try {
+        const timestamp = parseInt(product._id.substring(0, 8), 16) * 1000;
+        if (!isNaN(timestamp)) {
+          return new Date(timestamp);
+        }
+      } catch (e) {
+        console.error("Could not parse ID timestamp");
       }
-    } catch (e) {
-      console.error("Could not parse ID timestamp");
     }
-  }
 
-  // 3. Fallback: If no date can be found, return the current date 
-  // (This prevents the app from crashing)
-  return new Date();
-};
+    // 3. Fallback: If no date can be found, return the current date 
+    // (This prevents the app from crashing)
+    return new Date();
+  };
 
   // --- FIXED: NOW SHOWING ALL DAYS INDIVIDUALLY ---
   const monthlyChartData = useMemo(() => {
@@ -134,7 +134,7 @@ const Dashboard = () => {
                   </div>
                   <div className="flex items-start justify-between px-2 py-2 flex-wrap h-full ">
                     <MetricCard label="Products" value={stats.totalProducts} color="teal" icon={<Package size={16} />} />
-                    <MetricCard label="Value" value={`₹${stats.totalValue.toLocaleString()}`} color="blue" icon={<DollarSign size={16} />} />
+                    <MetricCard label="Value" value={`₹${stats.totalValue.toLocaleString()}`} color="blue" icon={<IndianRupeeIcon size={16} />} />
                     <MetricCard label="Low Stock" value={stats.lowStockCount} color="red" icon={<AlertTriangle size={16} />} />
                   </div>
                 </div>
@@ -183,20 +183,18 @@ const Dashboard = () => {
                   </div>
 
                   <div className="space-y-2 overflow-y-auto h-[300px] pr-2">
-                    
-                    {products.map((itm,index) => {
-      // Logic inside curly braces
-      const currentId = itm._id ; 
-      
-      return (
-        <div key={currentId} className="flex items-center justify-between px-4 py-2 bg-slate-200/70 rounded-lg border border-slate-100">
-          <span className='text-sm font-medium text-slate-700'>{itm.name}</span>
-          <span className={`text-sm font-bold ${itm.quantity <= itm.lowStockAt ? 'text-red-600' : 'text-emerald-600'}`}>
-            {itm.quantity} Units
-          </span>
-        </div>
-      );
-    })}
+
+                    {products.map((itm, index) => (
+                      <div
+                        key={itm._id || `product-${index}`}
+                        className="flex items-center justify-between px-4 py-2 bg-slate-200/70 rounded-lg border border-slate-100"
+                      >
+                        <span className='text-sm font-medium text-slate-700'>{itm.name}</span>
+                        <span className={`text-sm font-bold ${itm.quantity <= itm.lowStockAt ? 'text-red-600' : 'text-emerald-600'}`}>
+                          {itm.quantity} Units
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
