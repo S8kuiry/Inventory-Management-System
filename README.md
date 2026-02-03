@@ -6,7 +6,6 @@ A high-performance, full-stack inventory management solution. This application f
 
 ## 🌐 Live Deployment
 * **Frontend Interface:** [https://inventory-management-system-l0tst2ai8-subharthys-projects.vercel.app/](https://inventory-management-system-l0tst2ai8-subharthys-projects.vercel.app/)
-* **Backend API Service:** [https://inventory-management-system-server-9h8m.onrender.com](https://inventory-management-system-server-9h8m.onrender.com)
 
 ---
 
