@@ -186,7 +186,7 @@ const Dashboard = () => {
                     
                     {products.map((itm,index) => {
       // Logic inside curly braces
-      const currentId = itm._id || itm.id; 
+      const currentId = itm._id ; 
       
       return (
         <div key={currentId} className="flex items-center justify-between px-4 py-2 bg-slate-200/70 rounded-lg border border-slate-100">
